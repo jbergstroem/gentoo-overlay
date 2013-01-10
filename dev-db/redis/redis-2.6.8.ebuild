@@ -31,7 +31,7 @@ pkg_setup() {
 }
 
 src_prepare() {
-	epatch "${FILESDIR}/${P}"-{shared,config}.patch
+	epatch "${FILESDIR}/${PN}-2.6.7"-{shared,config}.patch
 	# now we will rewrite present Makefiles
 	local makefiles=""
 	for MKF in $(find -name 'Makefile' | cut -b 3-); do
