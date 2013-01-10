@@ -1,0 +1,7 @@
+gentoo-overlay
+==============
+
+My gentoo overlay. 
+
+I proxy a couple of packages and it's probably easier
+to maintain patch queues through git. So here we go.
