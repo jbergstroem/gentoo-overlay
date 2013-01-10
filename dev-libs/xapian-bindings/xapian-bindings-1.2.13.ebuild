@@ -9,6 +9,8 @@ PYTHON_USE_WITH="threads"
 SUPPORT_PYTHON_ABIS="1"
 RESTRICT_PYTHON_ABIS="3.* *-jython 2.7-pypy-*"
 
+USE_PHP="php5-3 php5-4"
+
 PHP_EXT_NAME="xapian"
 PHP_EXT_INI="yes"
 PHP_EXT_OPTIONAL_USE="php"
@@ -164,6 +166,10 @@ src_install () {
 pkg_postinst() {
 	if use python; then
 		python_mod_optimize xapian
+	fi
+
+	if use php_targets_php5-4; then
+		ewarn "Note: subclassing Xapian classes in PHP currently doesn't work with PHP 5.4"
 	fi
 }
 
