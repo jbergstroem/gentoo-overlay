@@ -5,3 +5,13 @@ My gentoo overlay.
 
 I proxy a couple of packages and it's probably easier
 to maintain patch queues through git. So here we go.
+
+Branch process:
+1. Import ebuild into master (xapian branch is a good example of _not_ doing this)
+2. Create version bump branch
+3. Do changes
+4. Merge back
+5. File bug at bugzilla/ping proxy maintainer, point to merge/branch diff.
+
+Stuff to think about:
+- Put Manifest in gitignore?
