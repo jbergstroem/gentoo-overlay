@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI="3"
+EAPI="4"
 
 MODULE_AUTHOR=OLLY
 inherit perl-module toolchain-funcs versionator
@@ -14,7 +14,7 @@ DESCRIPTION="Perl XS frontend to the Xapian C++ search library."
 
 LICENSE="|| ( Artistic GPL-1 GPL-2 GPL-3 )"
 SLOT="0"
-KEYWORDS="amd64 arm ~mips ppc ppc64 x86"
+KEYWORDS="~amd64 ~arm ~mips ~ppc ~ppc64 ~x86"
 IUSE="examples"
 
 RDEPEND=">=dev-libs/xapian-1.2.9
