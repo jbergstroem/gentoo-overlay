@@ -10,8 +10,9 @@ Branch process:
 1. Import ebuild into master (xapian branch is a good example of _not_ doing this)
 2. Create version bump branch
 3. Do changes
-4. Merge back
-5. File bug at bugzilla/ping proxy maintainer, point to merge/branch diff.
+4. File bug at bugzilla/ping proxy maintainer, point to merge/branch diff.
+5. When merged into gentoo-x86 (or other official overlay), check diffs and commit back to branch
+6. Merge branch to master
 
 Stuff to think about:
 - Put Manifest in gitignore?
