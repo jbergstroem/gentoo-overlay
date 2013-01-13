@@ -28,6 +28,8 @@ DEPEND="dev-python/setuptools[${PYTHON_USEDEP}]
 python_prepare_all() {
 	# these tests requires an already installed version of gunicorn
 	rm tests/test_003-config.py
+
+	distutils-r1_python_prepare_all
 }
 
 python_compile_all() {
