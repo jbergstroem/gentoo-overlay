@@ -22,6 +22,8 @@ DOCS=( changes.rst README TODO )
 
 python_prepare_all() {
 	sed -i -e "s/setuptools/distutils.core/" setup.py || die
+
+	distutils-r1_python_prepare_all
 }
 
 python_test() {
