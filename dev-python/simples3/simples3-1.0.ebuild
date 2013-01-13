@@ -3,7 +3,7 @@
 # $Header: $
 
 EAPI="5"
-PYTHON_COMPAT=( python{2_5,2_6,2_7} )
+PYTHON_COMPAT=( python{2_5,2_6,2_7} pypy{1_9,2_0} )
 
 inherit distutils-r1
 
@@ -22,8 +22,10 @@ DOCS=( changes.rst README TODO )
 
 python_prepare_all() {
 	sed -i -e "s/setuptools/distutils.core/" setup.py || die
+
+	distutils-r1_python_prepare_all
 }
 
 python_test() {
-	nosetests || die
+	nosetests || die "Tests fail with ${EPYTHON}"
 }
