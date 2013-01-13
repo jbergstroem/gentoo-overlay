@@ -14,7 +14,7 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-IUSE="doc test"
+IUSE="doc examples test"
 KEYWORDS="~amd64 ~x86"
 
 RDEPEND="dev-python/setproctitle"
@@ -41,6 +41,7 @@ python_compile_all() {
 python_install_all() {
 	local DOCS=( NOTICE README.rst THANKS )
 	use doc && dohtml -r docs/build/
+	use examples && dodoc -r examples
 
 	distutils-r1_python_install_all
 }
