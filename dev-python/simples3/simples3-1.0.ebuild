@@ -27,5 +27,5 @@ python_prepare_all() {
 }
 
 python_test() {
-	nosetests || die
+	nosetests || die "Tests fail with ${EPYTHON}"
 }
