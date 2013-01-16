@@ -4,7 +4,7 @@
 
 EAPI="4"
 
-inherit eutils base linux-info perl-app autotools multilib systemd user
+inherit autotools base eutils linux-info multilib perl-app systemd user
 
 DESCRIPTION="A a daemon which collects system statistic and provides mechanisms to store the values"
 
@@ -22,8 +22,8 @@ IUSE="contrib debug kernel_linux kernel_FreeBSD kernel_Darwin perl static-libs"
 COLLECTD_IMPOSSIBLE_PLUGINS="netapp pinba xmms"
 
 # Plugins that still need some work
-COLLECTD_UNTESTED_PLUGINS="ipvs apple_sensors tape zfs_arc modbus amqp genericjmx
-	lpar redis write_redis v5upgrade"
+COLLECTD_UNTESTED_PLUGINS="amqp apple_sensors genericjmx ipvs lpar modbus redis
+	tape v5upgrade write_redis zfs_arc"
 
 # Plugins that have been (compile) tested and can be enabled via COLLECTD_PLUGINS
 COLLECTD_TESTED_PLUGINS="aggregation apache apcups ascent battery bind conntrack
