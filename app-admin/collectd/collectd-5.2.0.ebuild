@@ -1,10 +1,10 @@
 # Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/app-admin/collectd/collectd-5.2.0.ebuild,v 1.2 2012/12/05 04:16:54 mr_bones_ Exp $
+# $Header: $
 
 EAPI="4"
 
-inherit eutils base linux-info perl-app autotools multilib user
+inherit eutils base linux-info perl-app autotools multilib systemd user
 
 DESCRIPTION="A a daemon which collects system statistic and provides mechanisms to store the values"
 
@@ -206,6 +206,8 @@ src_prepare() {
 	# paths like "/usr/var/..."
 	sed -i -e "s:@prefix@/var:/var:g" src/collectd.conf.in || die
 
+	sed -i -e "s:/etc/collectd/collectd.conf:/etc/collectd.conf:g" contrib/collectd.service || die
+
 	rm -r libltdl || die
 
 	eautoreconf
@@ -317,6 +319,7 @@ src_install() {
 
 	newinitd "${FILESDIR}/${PN}.initd" ${PN}
 	newconfd "${FILESDIR}/${PN}.confd" ${PN}
+	systemd_dounit "contrib/${PN}.service"
 
 	insinto /etc/logrotate.d
 	newins "${FILESDIR}/logrotate" collectd
