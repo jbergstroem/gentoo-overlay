@@ -1,10 +1,10 @@
 # Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/app-admin/collectd/collectd-5.2.0.ebuild,v 1.2 2012/12/05 04:16:54 mr_bones_ Exp $
+# $Header: $
 
 EAPI="4"
 
-inherit eutils base linux-info perl-app autotools multilib user
+inherit autotools base eutils linux-info multilib perl-app systemd user
 
 DESCRIPTION="A a daemon which collects system statistic and provides mechanisms to store the values"
 
@@ -22,8 +22,8 @@ IUSE="contrib debug kernel_linux kernel_FreeBSD kernel_Darwin perl static-libs"
 COLLECTD_IMPOSSIBLE_PLUGINS="netapp pinba xmms"
 
 # Plugins that still need some work
-COLLECTD_UNTESTED_PLUGINS="ipvs apple_sensors tape zfs_arc modbus amqp genericjmx
-	lpar redis write_redis v5upgrade"
+COLLECTD_UNTESTED_PLUGINS="amqp apple_sensors genericjmx ipvs lpar modbus redis
+	tape v5upgrade write_redis zfs_arc"
 
 # Plugins that have been (compile) tested and can be enabled via COLLECTD_PLUGINS
 COLLECTD_TESTED_PLUGINS="aggregation apache apcups ascent battery bind conntrack
@@ -206,6 +206,8 @@ src_prepare() {
 	# paths like "/usr/var/..."
 	sed -i -e "s:@prefix@/var:/var:g" src/collectd.conf.in || die
 
+	sed -i -e "s:/etc/collectd/collectd.conf:/etc/collectd.conf:g" contrib/collectd.service || die
+
 	rm -r libltdl || die
 
 	eautoreconf
@@ -317,6 +319,7 @@ src_install() {
 
 	newinitd "${FILESDIR}/${PN}.initd" ${PN}
 	newconfd "${FILESDIR}/${PN}.confd" ${PN}
+	systemd_dounit "contrib/${PN}.service"
 
 	insinto /etc/logrotate.d
 	newins "${FILESDIR}/logrotate" collectd
@@ -340,6 +343,7 @@ pkg_postinst() {
 	collectd_rdeps memcached ">=net-misc/memcached-1.2.2-r2"
 	collectd_rdeps ntpd net-misc/ntp
 	collectd_rdeps openvpn ">=net-misc/openvpn-2.0.9"
+	collectd_rdeps write_mongodb "dev-db/mongodb"
 
 	echo
 	elog "collectd is now started as unprivileged user by default."
