@@ -343,6 +343,7 @@ pkg_postinst() {
 	collectd_rdeps memcached ">=net-misc/memcached-1.2.2-r2"
 	collectd_rdeps ntpd net-misc/ntp
 	collectd_rdeps openvpn ">=net-misc/openvpn-2.0.9"
+	collectd_rdeps write_mongodb "dev-db/mongodb"
 
 	echo
 	elog "collectd is now started as unprivileged user by default."
