@@ -57,7 +57,8 @@ src_configure() {
 	econf
 
 	# Linenoise can't be built with -std=c99, see https://bugs.gentoo.org/451164
-	sed -i -e "s:-std=c99::g" deps/linenoise/Makefile || die
+	# also, don't define ANSI/c99 for lua twice
+	sed -i -e "s:-std=c99::g" deps/linenoise/Makefile deps/Makefile || die
 }
 
 src_compile() {
