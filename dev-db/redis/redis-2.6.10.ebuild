@@ -32,7 +32,6 @@ pkg_setup() {
 
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-2.6.7"-{shared,config}.patch
-	epatch "${FILESDIR}/${P}"-tclsh86.patch
 	# now we will rewrite present Makefiles
 	local makefiles=""
 	for MKF in $(find -name 'Makefile' | cut -b 3-); do
