@@ -4,11 +4,11 @@
 
 EAPI="5"
 
-inherit eutils
+inherit autotools eutils vcs-snapshot
 
 DESCRIPTION="A compressed bitset with supporting data structures and algorithms"
 HOMEPAGE="http://github.com/chriso/bitset"
-SRC_URI="mirror://github/chriso/${PN}/${P}.tar.gz"
+SRC_URI="https://github.com/chriso/${PN}/archive/${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
@@ -23,6 +23,10 @@ REQUIRED_USE="tcmalloc? ( !jemalloc )
 	jemalloc? ( !tcmalloc )"
 
 DOCS=( README.md )
+
+src_prepare() {
+	eautoreconf
+}
 
 src_configure() {
 	econf \
