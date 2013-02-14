@@ -1,4 +1,4 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -7,7 +7,7 @@ EAPI="5"
 inherit autotools eutils vcs-snapshot
 
 DESCRIPTION="A compressed bitset with supporting data structures and algorithms"
-HOMEPAGE="http://github.com/chriso/bitset"
+HOMEPAGE="https://github.com/chriso/bitset"
 SRC_URI="https://github.com/chriso/${PN}/archive/${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
