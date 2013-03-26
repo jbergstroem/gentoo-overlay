@@ -324,8 +324,8 @@ src_configure() {
 		--prefix="${EPREFIX}"/usr \
 		--conf-path="${EPREFIX}"/etc/${PN}/${PN}.conf \
 		--error-log-path="${EPREFIX}"/var/log/${PN}/error_log \
-		--pid-path="${EPREFIX}"/var/run/${PN}.pid \
-		--lock-path="${EPREFIX}"/var/lock/nginx.lock \
+		--pid-path="${EPREFIX}"/run/${PN}.pid \
+		--lock-path="${EPREFIX}"/var/lock/${PN}.lock \
 		--with-cc-opt="-I${EROOT}usr/include" \
 		--with-ld-opt="-L${EROOT}usr/lib" \
 		--http-log-path="${EPREFIX}"/var/log/${PN}/access_log \
