@@ -1,4 +1,4 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -113,7 +113,6 @@ PATCHES=(
 	"${FILESDIR}/${PN}-4.10.3"-werror.patch
 	"${FILESDIR}/${PN}-5.1.0"-libperl.patch
 	"${FILESDIR}/${PN}-5.1.1"-lt.patch
-	"${FILESDIR}/${PN}-5.1.1"-perl-prefix.patch
 )
 
 # @FUNCTION: collectd_plugin_kernel_linux
@@ -208,6 +207,9 @@ src_prepare() {
 
 	sed -i -e "s:/etc/collectd/collectd.conf:/etc/collectd.conf:g" contrib/collectd.service || die
 
+	# fix installdirs for perl, bug 444360
+	sed -i -e 's/INSTALL_BASE=$(DESTDIR)$(prefix) //' bindings/Makefile.am || die
+
 	rm -r libltdl || die
 
 	eautoreconf
@@ -286,8 +288,11 @@ src_configure() {
 		myconf+=" --with-libiptc=no"
 	fi
 
-	# The perl bindings
-	myconf+=" $(use_with perl perl-bindings)"
+	if use perl; then
+		myconf+=" --with-perl-bindings=INSTALLDIRS=vendor"
+	else
+		myconf+=" --without-perl-bindings"
+	fi
 
 	# Finally, run econf.
 	KERNEL_DIR="${KERNEL_DIR}" econf --config-cache --without-included-ltdl $(use_enable static-libs static) --localstatedir=/var ${myconf}
@@ -299,7 +304,6 @@ src_install() {
 	fixlocalpod
 
 	find "${D}/usr/" -name "*.la" -exec rm -f {} +
-	rm "${D}/usr/$(get_libdir)"/collectd/*.a
 
 	# use collectd_plugins_ping && setcap cap_net_raw+ep ${D}/usr/sbin/collectd
 	# we cannot do this yet
