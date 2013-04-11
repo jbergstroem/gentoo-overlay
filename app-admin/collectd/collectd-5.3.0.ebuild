@@ -23,7 +23,7 @@ COLLECTD_IMPOSSIBLE_PLUGINS="netapp pinba xmms"
 
 # Plugins that still need some work
 COLLECTD_UNTESTED_PLUGINS="amqp apple_sensors genericjmx ipvs lpar modbus redis
-	tape v5upgrade write_redis zfs_arc"
+	tape write_redis zfs_arc"
 
 # Plugins that have been (compile) tested and can be enabled via COLLECTD_PLUGINS
 COLLECTD_TESTED_PLUGINS="aggregation apache apcups ascent battery bind conntrack
@@ -293,6 +293,9 @@ src_configure() {
 	else
 		myconf+=" --without-perl-bindings"
 	fi
+
+	# No need for v5upgrade
+	myconf+=" --disable-target_v5upgrade"
 
 	# Finally, run econf.
 	KERNEL_DIR="${KERNEL_DIR}" econf --config-cache --without-included-ltdl $(use_enable static-libs static) --localstatedir=/var ${myconf}
