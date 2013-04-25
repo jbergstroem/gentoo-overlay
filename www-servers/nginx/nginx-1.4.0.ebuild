@@ -54,12 +54,6 @@ HTTP_CACHE_PURGE_MODULE_P="ngx_http_cache_purge-${HTTP_CACHE_PURGE_MODULE_PV}"
 HTTP_CACHE_PURGE_MODULE_URI="http://labs.frickle.com/files/ngx_cache_purge-${HTTP_CACHE_PURGE_MODULE_PV}.tar.gz"
 HTTP_CACHE_PURGE_MODULE_WD="${WORKDIR}/ngx_cache_purge-${HTTP_CACHE_PURGE_MODULE_PV}"
 
-# http_upload (http://www.grid.net.ru/nginx/upload.en.html, BSD license)
-HTTP_UPLOAD_MODULE_PV="2.2.0"
-HTTP_UPLOAD_MODULE_P="ngx_http_upload-${HTTP_UPLOAD_MODULE_PV}"
-HTTP_UPLOAD_MODULE_URI="http://www.grid.net.ru/nginx/download/nginx_upload_module-${HTTP_UPLOAD_MODULE_PV}.tar.gz"
-HTTP_UPLOAD_MODULE_WD="${WORKDIR}/nginx_upload_module-${HTTP_UPLOAD_MODULE_PV}"
-
 # http_slowfs_cache (http://labs.frickle.com/nginx_ngx_slowfs_cache/, BSD-2 license)
 HTTP_SLOWFS_CACHE_MODULE_PV="1.9"
 HTTP_SLOWFS_CACHE_MODULE_P="ngx_http_slowfs_cache-${HTTP_SLOWFS_CACHE_MODULE_PV}"
@@ -84,7 +78,7 @@ HTTP_AUTH_PAM_MODULE_P="ngx_http_auth_pam-${HTTP_AUTH_PAM_MODULE_PV}"
 HTTP_AUTH_PAM_MODULE_URI="http://web.iti.upv.es/~sto/nginx/ngx_http_auth_pam_module-${HTTP_AUTH_PAM_MODULE_PV}.tar.gz"
 HTTP_AUTH_PAM_MODULE_WD="${WORKDIR}/ngx_http_auth_pam_module-${HTTP_AUTH_PAM_MODULE_PV}"
 
-inherit eutils ssl-cert toolchain-funcs perl-module flag-o-matic user
+inherit eutils ssl-cert toolchain-funcs perl-module flag-o-matic user systemd
 
 DESCRIPTION="Robust, small and high performance http and reverse proxy server"
 HOMEPAGE="http://nginx.org"
@@ -95,7 +89,6 @@ SRC_URI="http://nginx.org/download/${P}.tar.gz
 	nginx_modules_http_headers_more? ( ${HTTP_HEADERS_MORE_MODULE_URI} -> ${HTTP_HEADERS_MORE_MODULE_P}.tar.gz )
 	nginx_modules_http_push? ( ${HTTP_PUSH_MODULE_URI} -> ${HTTP_PUSH_MODULE_P}.tar.gz )
 	nginx_modules_http_cache_purge? ( ${HTTP_CACHE_PURGE_MODULE_URI} -> ${HTTP_CACHE_PURGE_MODULE_P}.tar.gz )
-	nginx_modules_http_upload? ( ${HTTP_UPLOAD_MODULE_URI} -> ${HTTP_UPLOAD_MODULE_P}.tar.gz )
 	nginx_modules_http_slowfs_cache? ( ${HTTP_SLOWFS_CACHE_MODULE_URI} -> ${HTTP_SLOWFS_CACHE_MODULE_P}.tar.gz )
 	nginx_modules_http_fancyindex? ( ${HTTP_FANCYINDEX_MODULE_URI} -> ${HTTP_FANCYINDEX_MODULE_P}.tar.gz )
 	nginx_modules_http_lua? ( ${HTTP_LUA_MODULE_URI} -> ${HTTP_LUA_MODULE_P}.tar.gz )
@@ -116,7 +109,6 @@ NGINX_MODULES_3RD="
 	http_headers_more
 	http_push
 	http_cache_purge
-	http_upload
 	http_slowfs_cache
 	http_fancyindex
 	http_lua
@@ -256,11 +248,6 @@ src_configure() {
 		myconf+=" --add-module=${HTTP_CACHE_PURGE_MODULE_WD}"
 	fi
 
-	if use nginx_modules_http_upload; then
-		http_enabled=1
-		myconf+=" --add-module=${HTTP_UPLOAD_MODULE_WD}"
-	fi
-
 	if use nginx_modules_http_slowfs_cache; then
 		http_enabled=1
 		myconf+=" --add-module=${HTTP_SLOWFS_CACHE_MODULE_WD}"
@@ -325,7 +312,7 @@ src_configure() {
 		--conf-path="${EPREFIX}"/etc/${PN}/${PN}.conf \
 		--error-log-path="${EPREFIX}"/var/log/${PN}/error_log \
 		--pid-path="${EPREFIX}"/run/${PN}.pid \
-		--lock-path="${EPREFIX}"/var/lock/${PN}.lock \
+		--lock-path="${EPREFIX}"/run/lock/${PN}.lock \
 		--with-cc-opt="-I${EROOT}usr/include" \
 		--with-ld-opt="-L${EROOT}usr/lib" \
 		--http-log-path="${EPREFIX}"/var/log/${PN}/access_log \
@@ -349,6 +336,9 @@ src_install() {
 	cp "${FILESDIR}"/nginx.conf "${ED}"/etc/nginx/nginx.conf || die
 
 	newinitd "${FILESDIR}"/nginx.initd nginx
+
+	systemd_newtmpfilesd "${FILESDIR}"/nginx.tmpfiles nginx.conf
+	systemd_dounit "${FILESDIR}"/nginx.service
 
 	doman man/nginx.8
 	dodoc CHANGES* README
@@ -380,11 +370,6 @@ src_install() {
 	if use nginx_modules_http_cache_purge; then
 		docinto ${HTTP_CACHE_PURGE_MODULE_P}
 		dodoc "${HTTP_CACHE_PURGE_MODULE_WD}"/{CHANGES,README.md,TODO.md}
-	fi
-
-	if use nginx_modules_http_upload; then
-		docinto ${HTTP_UPLOAD_MODULE_P}
-		dodoc "${HTTP_UPLOAD_MODULE_WD}"/{Changelog,README}
 	fi
 
 	if use nginx_modules_http_slowfs_cache; then
