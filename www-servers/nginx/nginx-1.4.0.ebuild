@@ -67,7 +67,7 @@ HTTP_FANCYINDEX_MODULE_URI="http://gitorious.org/ngx-fancyindex/ngx-fancyindex/a
 HTTP_FANCYINDEX_MODULE_WD="${WORKDIR}/ngx-fancyindex-ngx-fancyindex"
 
 # http_lua (https://github.com/chaoslawful/lua-nginx-module, BSD license)
-HTTP_LUA_MODULE_PV="0.7.11"
+HTTP_LUA_MODULE_PV="0.8.0"
 HTTP_LUA_MODULE_P="ngx_http_lua-${HTTP_LUA_MODULE_PV}"
 HTTP_LUA_MODULE_URI="https://github.com/chaoslawful/lua-nginx-module/archive/v${HTTP_LUA_MODULE_PV}.tar.gz"
 HTTP_LUA_MODULE_WD="${WORKDIR}/lua-nginx-module-${HTTP_LUA_MODULE_PV}"
