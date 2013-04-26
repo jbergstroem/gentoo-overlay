@@ -155,8 +155,8 @@ DEPEND="${CDEPEND}
 	arm? ( dev-libs/libatomic_ops )
 	libatomic? ( dev-libs/libatomic_ops )"
 PDEPEND="vim-syntax? ( app-vim/nginx-syntax )"
-REQUIRED_USE="pcre-jit? ( pcre )"
-
+REQUIRED_USE="pcre-jit? ( pcre )
+	nginx_modules_http_lua? ( nginx_modules_http_rewrite )"
 pkg_setup() {
 	ebegin "Creating nginx user and group"
 	enewgroup ${PN}
