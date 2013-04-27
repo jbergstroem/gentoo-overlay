@@ -400,4 +400,9 @@ pkg_postinst() {
 			use prefix || chown ${PN}:${PN} "${EROOT}"/etc/ssl/${PN}/${PN}.{crt,csr,key,pem}
 		fi
 	fi
+
+	if use nginx_modules_http_lua && use nginx_modules_http_spdy; then
+		ewarn "Lua 3rd party module author warns against using ${P} with"
+        ewarn "NGINX_MODULES_HTTP=\"lua spdy\". For more info, see http://git.io/OldLsg"
+	fi
 }
