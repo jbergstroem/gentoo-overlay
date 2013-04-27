@@ -4,7 +4,7 @@
 
 EAPI=5
 
-inherit autotools eutils flag-o-matic user
+inherit autotools eutils flag-o-matic toolchain-funcs user
 
 DESCRIPTION="A persistent caching system, key-value and data structures database."
 HOMEPAGE="http://redis.io/"
@@ -62,6 +62,8 @@ src_configure() {
 }
 
 src_compile() {
+	tc-export CC
+
 	local myconf=""
 
 	if use tcmalloc ; then
@@ -72,7 +74,7 @@ src_compile() {
 		myconf="${myconf} MALLOC=yes"
 	fi
 
-	emake ${myconf} V=1
+	emake ${myconf} V=1 CC="${CC}"
 }
 
 src_install() {
