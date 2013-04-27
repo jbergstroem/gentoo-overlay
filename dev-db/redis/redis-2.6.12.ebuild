@@ -72,7 +72,7 @@ src_compile() {
 		myconf="${myconf} MALLOC=yes"
 	fi
 
-	emake ${myconf}
+	emake ${myconf} V=1
 }
 
 src_install() {
