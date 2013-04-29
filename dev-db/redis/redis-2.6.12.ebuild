@@ -32,6 +32,10 @@ pkg_setup() {
 
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-2.6.7"-{shared,config}.patch
+
+	# bug 467172, 467174
+	sed -i -e 's:AR=:AR?=:g' -e 's:RANLIB=:RANLIB?=:g' "${S}/deps/lua/src/Makefile" || die
+
 	# now we will rewrite present Makefiles
 	local makefiles=""
 	for MKF in $(find -name 'Makefile' | cut -b 3-); do
@@ -62,7 +66,7 @@ src_configure() {
 }
 
 src_compile() {
-	tc-export CC
+	tc-export CC AR RANLIB
 
 	local myconf=""
 
@@ -74,7 +78,7 @@ src_compile() {
 		myconf="${myconf} MALLOC=yes"
 	fi
 
-	emake ${myconf} V=1 CC="${CC}"
+	emake ${myconf} V=1 CC="${CC}" AR="${AR} rcu" RANLIB="${RANLIB}"
 }
 
 src_install() {
