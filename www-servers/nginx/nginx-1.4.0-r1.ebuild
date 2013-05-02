@@ -78,6 +78,18 @@ HTTP_AUTH_PAM_MODULE_P="ngx_http_auth_pam-${HTTP_AUTH_PAM_MODULE_PV}"
 HTTP_AUTH_PAM_MODULE_URI="http://web.iti.upv.es/~sto/nginx/ngx_http_auth_pam_module-${HTTP_AUTH_PAM_MODULE_PV}.tar.gz"
 HTTP_AUTH_PAM_MODULE_WD="${WORKDIR}/ngx_http_auth_pam_module-${HTTP_AUTH_PAM_MODULE_PV}"
 
+# http_upstream_check (https://github.com/yaoweibin/nginx_upstream_check_module, BSD license)
+HTTP_UPSTREAM_CHECK_MODULE_PV="99f39394f387211641a1668d61faf2d5186ea1f5"
+HTTP_UPSTREAM_CHECK_MODULE_P="ngx_http_upstream_check-${HTTP_UPSTREAM_CHECK_MODULE_PV}"
+HTTP_UPSTREAM_CHECK_MODULE_URI="https://github.com/yaoweibin/nginx_upstream_check_module/archive/${HTTP_UPSTREAM_CHECK_MODULE_PV}.tar.gz"
+HTTP_UPSTREAM_CHECK_MODULE_WD="${WORKDIR}/nginx_upstream_check_module-${HTTP_UPSTREAM_CHECK_MODULE_PV}"
+
+# http_metrics (https://github.com/madvertise/ngx_metrics, BSD license)
+HTTP_METRICS_MODULE_PV="0.1.1"
+HTTP_METRICS_MODULE_P="ngx_metrics-${HTTP_METRICS_MODULE_PV}"
+HTTP_METRICS_MODULE_URI="https://github.com/madvertise/ngx_metrics/archive/v${HTTP_METRICS_MODULE_PV}.tar.gz"
+HTTP_METRICS_MODULE_WD="${WORKDIR}/ngx_metrics-${HTTP_METRICS_MODULE_PV}"
+
 inherit eutils ssl-cert toolchain-funcs perl-module flag-o-matic user systemd
 
 DESCRIPTION="Robust, small and high performance http and reverse proxy server"
@@ -92,7 +104,9 @@ SRC_URI="http://nginx.org/download/${P}.tar.gz
 	nginx_modules_http_slowfs_cache? ( ${HTTP_SLOWFS_CACHE_MODULE_URI} -> ${HTTP_SLOWFS_CACHE_MODULE_P}.tar.gz )
 	nginx_modules_http_fancyindex? ( ${HTTP_FANCYINDEX_MODULE_URI} -> ${HTTP_FANCYINDEX_MODULE_P}.tar.gz )
 	nginx_modules_http_lua? ( ${HTTP_LUA_MODULE_URI} -> ${HTTP_LUA_MODULE_P}.tar.gz )
-	nginx_modules_http_auth_pam? ( ${HTTP_AUTH_PAM_MODULE_URI} -> ${HTTP_AUTH_PAM_MODULE_P}.tar.gz )"
+	nginx_modules_http_auth_pam? ( ${HTTP_AUTH_PAM_MODULE_URI} -> ${HTTP_AUTH_PAM_MODULE_P}.tar.gz )
+	nginx_modules_http_upstream_check? ( ${HTTP_UPSTREAM_CHECK_MODULE_URI} -> ${HTTP_UPSTREAM_CHECK_MODULE_P}.tar.gz )
+	nginx_modules_http_metrics? ( ${HTTP_METRICS_MODULE_URI} -> ${HTTP_METRICS_MODULE_P}.tar.gz )"
 
 LICENSE="BSD-2 BSD SSLeay MIT GPL-2"
 SLOT="0"
@@ -112,7 +126,9 @@ NGINX_MODULES_3RD="
 	http_slowfs_cache
 	http_fancyindex
 	http_lua
-	http_auth_pam"
+	http_auth_pam
+	http_upstream_check
+	http_metrics"
 
 IUSE="aio debug +http +http-cache ipv6 libatomic +pcre pcre-jit selinux ssl
 syslog vim-syntax"
@@ -149,14 +165,17 @@ CDEPEND="
 	nginx_modules_http_spdy? ( >=dev-libs/openssl-1.0.1c )
 	nginx_modules_http_xslt? ( dev-libs/libxml2 dev-libs/libxslt )
 	nginx_modules_http_lua? ( || ( dev-lang/lua dev-lang/luajit ) )
-	nginx_modules_http_auth_pam? ( virtual/pam )"
+	nginx_modules_http_auth_pam? ( virtual/pam )
+	nginx_modules_http_metrics? ( dev-libs/yajl )"
 RDEPEND="${CDEPEND}"
 DEPEND="${CDEPEND}
 	arm? ( dev-libs/libatomic_ops )
 	libatomic? ( dev-libs/libatomic_ops )"
 PDEPEND="vim-syntax? ( app-vim/nginx-syntax )"
+
 REQUIRED_USE="pcre-jit? ( pcre )
 	nginx_modules_http_lua? ( nginx_modules_http_rewrite )"
+
 pkg_setup() {
 	ebegin "Creating nginx user and group"
 	enewgroup ${PN}
@@ -183,7 +202,13 @@ pkg_setup() {
 }
 
 src_prepare() {
-	use syslog && epatch "${SYSLOG_MODULE_WD}"/syslog_${SYSLOG_MODULE_NGINX_PV}.patch
+	if use syslog; then
+		epatch "${SYSLOG_MODULE_WD}"/syslog_${SYSLOG_MODULE_NGINX_PV}.patch
+	fi
+
+	if use nginx_modules_http_upstream_check; then
+		epatch "${HTTP_UPSTREAM_CHECK_MODULE_WD}"/check_1.2.6+.patch
+	fi
 
 	find auto/ -type f -print0 | xargs -0 sed -i 's:\&\& make:\&\& \\$(MAKE):' || die
 	# We have config protection, don't rename etc files
@@ -267,6 +292,16 @@ src_configure() {
 	if use nginx_modules_http_auth_pam; then
 		http_enabled=1
 		myconf+=" --add-module=${HTTP_AUTH_PAM_MODULE_WD}"
+	fi
+
+	if use nginx_modules_http_upstream_check; then
+		http_enabled=1
+		myconf+=" --add-module=${HTTP_UPSTREAM_CHECK_MODULE_WD}"
+	fi
+
+	if use nginx_modules_http_metrics; then
+		http_enabled=1
+		myconf+=" --add-module=${HTTP_METRICS_MODULE_WD}"
 	fi
 
 	if use http || use http-cache; then
@@ -391,6 +426,16 @@ src_install() {
 		docinto ${HTTP_AUTH_PAM_MODULE_P}
 		dodoc "${HTTP_AUTH_PAM_MODULE_WD}"/{README,ChangeLog}
 	fi
+
+	if use nginx_modules_http_upstream_check; then
+		docinto ${HTTP_UPSTREAM_CHECK_MODULE_P}
+		dodoc "${HTTP_UPSTREAM_CHECK_MODULE_WD}"/{README,CHANGES}
+	fi
+
+	if use nginx_modules_http_metrics; then
+		docinto ${HTTP_METRICS_MODULE_P}
+		dodoc "${HTTP_METRICS_MODULE_WD}"/README.md
+	fi
 }
 
 pkg_postinst() {
@@ -403,6 +448,6 @@ pkg_postinst() {
 
 	if use nginx_modules_http_lua && use nginx_modules_http_spdy; then
 		ewarn "Lua 3rd party module author warns against using ${P} with"
-        ewarn "NGINX_MODULES_HTTP=\"lua spdy\". For more info, see http://git.io/OldLsg"
+		ewarn "NGINX_MODULES_HTTP=\"lua spdy\". For more info, see http://git.io/OldLsg"
 	fi
 }
