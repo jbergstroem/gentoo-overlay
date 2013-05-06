@@ -1,10 +1,10 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI=4
+EAPI=5
 
-inherit autotools eutils flag-o-matic user
+inherit autotools eutils flag-o-matic toolchain-funcs user
 
 DESCRIPTION="A persistent caching system, key-value and data structures database."
 HOMEPAGE="http://redis.io/"
@@ -32,7 +32,10 @@ pkg_setup() {
 
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-2.6.7"-{shared,config}.patch
-	epatch "${FILESDIR}/${P}"-tclsh86.patch
+
+	# bug 467172, 467174
+	sed -i -e 's:AR=:AR?=:g' -e 's:RANLIB=:RANLIB?=:g' "${S}/deps/lua/src/Makefile" || die
+
 	# now we will rewrite present Makefiles
 	local makefiles=""
 	for MKF in $(find -name 'Makefile' | cut -b 3-); do
@@ -63,6 +66,8 @@ src_configure() {
 }
 
 src_compile() {
+	tc-export CC AR RANLIB
+
 	local myconf=""
 
 	if use tcmalloc ; then
@@ -73,7 +78,7 @@ src_compile() {
 		myconf="${myconf} MALLOC=yes"
 	fi
 
-	emake ${myconf}
+	emake ${myconf} V=1 CC="${CC}" AR="${AR} rcu" RANLIB="${RANLIB}"
 }
 
 src_install() {
