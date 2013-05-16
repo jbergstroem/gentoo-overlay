@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI="4"
+EAPI="5"
 
 inherit eutils toolchain-funcs
 
@@ -41,7 +41,7 @@ src_configure() {
 	fi
 
 	if use sqlite; then
-		myconf+=" --with-sqlite=${EPREFIX}/usr/ --enable-sqliteunlock"
+		myconf="${myconf} --with-sqlite=${EPREFIX}/usr/ --enable-sqliteunlock"
 	else
 		myconf="${myconf} --without-sqlite"
 	fi
