@@ -41,7 +41,7 @@ src_configure() {
 	fi
 
 	if use sqlite; then
-		myconf+=" --with-sqlite=${EPREFIX}/usr/ --enable-sqliteunlock"
+		myconf="${myconf} --with-sqlite=${EPREFIX}/usr/ --enable-sqliteunlock"
 	else
 		myconf="${myconf} --without-sqlite"
 	fi
