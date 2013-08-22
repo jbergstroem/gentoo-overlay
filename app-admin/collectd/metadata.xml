@@ -84,7 +84,7 @@
 		<flag name='collectd_plugins_sensors'>Build the sensors input plugin (uses lm-sensors to read hardware sensors)</flag> 
 		<flag name='collectd_plugins_serial'>Build the serial input plugin (collects the traffic on serial interfaces)</flag> 
 		<flag name='collectd_plugins_snmp'>Build the snmp input plugin (read values from network devices using SNMP)</flag> 
-		<flag name='collectd_plugins_statds'>Build the statsd input plugin (accepts statsd-type metrics from a UDP socket)</flag>
+		<flag name='collectd_plugins_statsd'>Build the statsd input plugin (accepts statsd-type metrics from a UDP socket)</flag>
 		<flag name='collectd_plugins_swap'>Build the swap input plugin (amount of memory currently written to swap)</flag> 
 		<flag name='collectd_plugins_syslog'>Build the syslog output plugin (receives messages from collectd and dispatches them to syslog)</flag>
 		<flag name='collectd_plugins_table'>Build the table input plugin (parses table-like structured plain text)</flag> 
