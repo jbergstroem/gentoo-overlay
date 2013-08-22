@@ -26,18 +26,18 @@ COLLECTD_UNTESTED_PLUGINS="amqp apple_sensors genericjmx ipvs lpar modbus redis
 	tape write_redis zfs_arc"
 
 # Plugins that have been (compile) tested and can be enabled via COLLECTD_PLUGINS
-COLLECTD_TESTED_PLUGINS="aggregation apache apcups ascent battery bind conntrack
-	contextswitch cpu cpufreq csv curl curl_json curl_xml dbi df disk dns email
-	entropy ethstat exec filecount fscache gmond hddtemp interface ipmi iptables
-	irq java libvirt load logfile madwifi match_empty_counter match_hashed
-	match_regex match_timediff match_value mbmon md memcachec memcached memory
-	multimeter mysql netlink network network nfs nginx notify_desktop notify_email
-	ntpd numa nut olsrd onewire openvpn oracle perl perl ping postgresql powerdns
-	processes protocols python python routeros rrdcached rrdcached rrdtool sensors
-	serial snmp swap syslog table tail target_notification target_replace
-	target_scale target_set tcpconns teamspeak2 ted thermal threshold tokyotyrant
-	unixsock uptime users uuid varnish vmem vserver wireless write_graphite
-	write_http write_mongodb"
+COLLECTD_TESTED_PLUGINS="aggregation apache apcups ascent battery bind cgroups
+	conntrack contextswitch cpu cpufreq csv curl curl_json curl_xml dbi df disk dns
+	email entropy ethstat exec filecount fscache gmond hddtemp interface ipmi
+	iptables irq java libvirt load logfile lvm madwifi match_empty_counter
+	match_hashed match_regex match_timediff match_value mbmon md memcachec memcached
+	memory multimeter mysql netlink network network nfs nginx notify_desktop
+	notify_email ntpd numa nut olsrd onewire openvpn oracle perl perl ping postgresql
+	powerdns processes protocols python python routeros rrdcached rrdcached rrdtool
+	sensors serial snmp statsd swap syslog table tail target_notification
+	target_replace target_scale target_set tcpconns teamspeak2 ted thermal threshold
+	tokyotyrant unixsock uptime users uuid varnish vmem vserver wireless
+	write_graphite write_http write_mongodb"
 
 COLLECTD_DISABLED_PLUGINS="${COLLECTD_IMPOSSIBLE_PLUGINS} ${COLLECTD_UNTESTED_PLUGINS}"
 
@@ -67,9 +67,10 @@ COMMON_DEPEND="
 	collectd_plugins_iptables?		( >=net-firewall/iptables-1.4.13 )
 	collectd_plugins_java?			( virtual/jre dev-java/java-config-wrapper )
 	collectd_plugins_libvirt?		( app-emulation/libvirt dev-libs/libxml2 )
+	collectd_plugins_lvm?			( sys-fs/lvm2 )
 	collectd_plugins_memcachec?		( dev-libs/libmemcached )
 	collectd_plugins_mysql?			( >=virtual/mysql-5.0 )
-	collectd_plugins_netlink?		( >=net-libs/libmnl )
+	collectd_plugins_netlink?		( net-libs/libmnl )
 	collectd_plugins_nginx?			( net-misc/curl )
 	collectd_plugins_notify_desktop?	( x11-libs/libnotify )
 	collectd_plugins_notify_email?		( net-libs/libesmtp dev-libs/openssl )
@@ -153,6 +154,9 @@ collectd_linux_kernel_checks() {
 	# battery.c:/proc/pmu/battery_%i
 	# battery.c:/proc/acpi/battery
 	collectd_plugin_kernel_linux battery ACPI_BATTERY warn
+
+	# cgroups.c:/sys/fs/cgroup/
+	collectd_plugin_kernel_linux cgroups CONFIG_CGROUPS warn
 
 	# cpufreq.c:/sys/devices/system/cpu/cpu%d/cpufreq/
 	collectd_plugin_kernel_linux cpufreq SYSFS warn
