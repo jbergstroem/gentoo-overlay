@@ -69,7 +69,7 @@ COMMON_DEPEND="
 	collectd_plugins_libvirt?		( app-emulation/libvirt dev-libs/libxml2 )
 	collectd_plugins_memcachec?		( dev-libs/libmemcached )
 	collectd_plugins_mysql?			( >=virtual/mysql-5.0 )
-	collectd_plugins_netlink?		( >=sys-apps/iproute2-3.3.0 )
+	collectd_plugins_netlink?		( >=net-libs/libmnl )
 	collectd_plugins_nginx?			( net-misc/curl )
 	collectd_plugins_notify_desktop?	( x11-libs/libnotify )
 	collectd_plugins_notify_email?		( net-libs/libesmtp dev-libs/openssl )
