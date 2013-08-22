@@ -19,7 +19,7 @@ IUSE="contrib debug kernel_linux kernel_FreeBSD kernel_Darwin perl static-libs"
 # The plugin lists have to follow here since they extend IUSE
 
 # Plugins that to my knowledge cannot be supported (eg. dependencies not in gentoo)
-COLLECTD_IMPOSSIBLE_PLUGINS="netapp pinba xmms"
+COLLECTD_IMPOSSIBLE_PLUGINS="aquaero mic netapp pinba sigrok xmms"
 
 # Plugins that still need some work
 COLLECTD_UNTESTED_PLUGINS="amqp apple_sensors genericjmx ipvs lpar modbus redis
