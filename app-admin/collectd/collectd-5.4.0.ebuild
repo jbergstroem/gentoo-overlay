@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI="4"
+EAPI="5"
 
 inherit autotools base eutils linux-info multilib perl-app systemd user
 
@@ -19,25 +19,25 @@ IUSE="contrib debug kernel_linux kernel_FreeBSD kernel_Darwin perl static-libs"
 # The plugin lists have to follow here since they extend IUSE
 
 # Plugins that to my knowledge cannot be supported (eg. dependencies not in gentoo)
-COLLECTD_IMPOSSIBLE_PLUGINS="netapp pinba xmms"
+COLLECTD_IMPOSSIBLE_PLUGINS="aquaero mic netapp pinba sigrok xmms"
 
 # Plugins that still need some work
 COLLECTD_UNTESTED_PLUGINS="amqp apple_sensors genericjmx ipvs lpar modbus redis
 	tape write_redis zfs_arc"
 
 # Plugins that have been (compile) tested and can be enabled via COLLECTD_PLUGINS
-COLLECTD_TESTED_PLUGINS="aggregation apache apcups ascent battery bind conntrack
-	contextswitch cpu cpufreq csv curl curl_json curl_xml dbi df disk dns email
-	entropy ethstat exec filecount fscache gmond hddtemp interface ipmi iptables
-	irq java libvirt load logfile madwifi match_empty_counter match_hashed
-	match_regex match_timediff match_value mbmon md memcachec memcached memory
-	multimeter mysql netlink network network nfs nginx notify_desktop notify_email
-	ntpd numa nut olsrd onewire openvpn oracle perl perl ping postgresql powerdns
-	processes protocols python python routeros rrdcached rrdcached rrdtool sensors
-	serial snmp swap syslog table tail target_notification target_replace
-	target_scale target_set tcpconns teamspeak2 ted thermal threshold tokyotyrant
-	unixsock uptime users uuid varnish vmem vserver wireless write_graphite
-	write_http write_mongodb"
+COLLECTD_TESTED_PLUGINS="aggregation apache apcups ascent battery bind cgroups
+	conntrack contextswitch cpu cpufreq csv curl curl_json curl_xml dbi df disk dns
+	email entropy ethstat exec filecount fscache gmond hddtemp interface ipmi
+	iptables irq java libvirt load logfile lvm madwifi match_empty_counter
+	match_hashed match_regex match_timediff match_value mbmon md memcachec memcached
+	memory multimeter mysql netlink network network nfs nginx notify_desktop
+	notify_email ntpd numa nut olsrd onewire openvpn oracle perl perl ping postgresql
+	powerdns processes protocols python python routeros rrdcached rrdcached rrdtool
+	sensors serial snmp statsd swap syslog table tail target_notification
+	target_replace target_scale target_set tcpconns teamspeak2 ted thermal threshold
+	tokyotyrant unixsock uptime users uuid varnish vmem vserver wireless
+	write_graphite write_http write_mongodb"
 
 COLLECTD_DISABLED_PLUGINS="${COLLECTD_IMPOSSIBLE_PLUGINS} ${COLLECTD_UNTESTED_PLUGINS}"
 
@@ -67,22 +67,23 @@ COMMON_DEPEND="
 	collectd_plugins_iptables?		( >=net-firewall/iptables-1.4.13 )
 	collectd_plugins_java?			( virtual/jre dev-java/java-config-wrapper )
 	collectd_plugins_libvirt?		( app-emulation/libvirt dev-libs/libxml2 )
+	collectd_plugins_lvm?			( sys-fs/lvm2 )
 	collectd_plugins_memcachec?		( dev-libs/libmemcached )
 	collectd_plugins_mysql?			( >=virtual/mysql-5.0 )
-	collectd_plugins_netlink?		( >=sys-apps/iproute2-3.3.0 )
+	collectd_plugins_netlink?		( net-libs/libmnl )
 	collectd_plugins_nginx?			( net-misc/curl )
 	collectd_plugins_notify_desktop?	( x11-libs/libnotify )
-	collectd_plugins_notify_email?		( >=net-libs/libesmtp-1.0.4 dev-libs/openssl )
+	collectd_plugins_notify_email?		( net-libs/libesmtp dev-libs/openssl )
 	collectd_plugins_nut?			( sys-power/nut )
 	collectd_plugins_onewire?		( sys-fs/owfs )
-	collectd_plugins_oracle?		( >=dev-db/oracle-instantclient-basic-11.2.0.1.0 )
+	collectd_plugins_oracle?		( dev-db/oracle-instantclient-basic )
 	collectd_plugins_perl?			( dev-lang/perl[ithreads] ( || ( sys-devel/libperl[ithreads] >=sys-devel/libperl-5.10 ) ) )
 	collectd_plugins_ping?			( net-libs/liboping )
-	collectd_plugins_postgresql?		( >=dev-db/postgresql-base-8.2 )
+	collectd_plugins_postgresql?		( dev-db/postgresql-base )
 	collectd_plugins_python?		( =dev-lang/python-2* )
 	collectd_plugins_routeros?		( net-libs/librouteros )
-	collectd_plugins_rrdcached?		( >=net-analyzer/rrdtool-1.4 )
-	collectd_plugins_rrdtool?		( >=net-analyzer/rrdtool-1.2.27 )
+	collectd_plugins_rrdcached?		( net-analyzer/rrdtool )
+	collectd_plugins_rrdtool?		( net-analyzer/rrdtool )
 	collectd_plugins_sensors?		( sys-apps/lm_sensors )
 	collectd_plugins_snmp?			( net-analyzer/net-snmp )
 	collectd_plugins_tokyotyrant?		( net-misc/tokyotyrant )
@@ -91,12 +92,12 @@ COMMON_DEPEND="
 	collectd_plugins_write_mongodb?		( dev-libs/mongo-c-driver )
 
 	kernel_FreeBSD? (
-		collectd_plugins_disk?		( >=sys-libs/libstatgrab-0.16 )
-		collectd_plugins_interface?	( >=sys-libs/libstatgrab-0.16 )
-		collectd_plugins_load?		( >=sys-libs/libstatgrab-0.16 )
-		collectd_plugins_memory?	( >=sys-libs/libstatgrab-0.16 )
-		collectd_plugins_swap?		( >=sys-libs/libstatgrab-0.16 )
-		collectd_plugins_users?		( >=sys-libs/libstatgrab-0.16 )
+		collectd_plugins_disk?		( sys-libs/libstatgrab )
+		collectd_plugins_interface?	( sys-libs/libstatgrab )
+		collectd_plugins_load?		( sys-libs/libstatgrab )
+		collectd_plugins_memory?	( sys-libs/libstatgrab )
+		collectd_plugins_swap?		( sys-libs/libstatgrab )
+		collectd_plugins_users?		( sys-libs/libstatgrab )
 	)"
 
 DEPEND="${COMMON_DEPEND}
@@ -153,6 +154,9 @@ collectd_linux_kernel_checks() {
 	# battery.c:/proc/pmu/battery_%i
 	# battery.c:/proc/acpi/battery
 	collectd_plugin_kernel_linux battery ACPI_BATTERY warn
+
+	# cgroups.c:/sys/fs/cgroup/
+	collectd_plugin_kernel_linux cgroups CONFIG_CGROUPS warn
 
 	# cpufreq.c:/sys/devices/system/cpu/cpu%d/cpufreq/
 	collectd_plugin_kernel_linux cpufreq SYSFS warn
@@ -302,7 +306,7 @@ src_configure() {
 }
 
 src_install() {
-	emake DESTDIR="${D}" install || die
+	emake DESTDIR="${D}" install
 
 	fixlocalpod
 
