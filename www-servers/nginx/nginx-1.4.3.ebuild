@@ -1,6 +1,6 @@
 # Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/www-servers/nginx/nginx-1.4.2-r1.ebuild,v 1.1 2013/10/01 10:21:09 dev-zero Exp $
+# $Header: /var/cvsroot/gentoo-x86/www-servers/nginx/nginx-1.4.3.ebuild,v 1.1 2013/10/17 08:06:23 dev-zero Exp $
 
 EAPI="5"
 
@@ -18,10 +18,10 @@ EAPI="5"
 GENTOO_DEPEND_ON_PERL="no"
 
 # syslog
-SYSLOG_MODULE_PV="0.25"
+SYSLOG_MODULE_PV="165affd9741f0e30c4c8225da5e487d33832aca3"
 SYSLOG_MODULE_NGINX_PV="1.4.0"
 SYSLOG_MODULE_P="ngx_syslog-${SYSLOG_MODULE_PV}"
-SYSLOG_MODULE_URI="https://github.com/yaoweibin/nginx_syslog_patch/archive/v${SYSLOG_MODULE_PV}.tar.gz"
+SYSLOG_MODULE_URI="https://github.com/yaoweibin/nginx_syslog_patch/archive/${SYSLOG_MODULE_PV}.tar.gz"
 SYSLOG_MODULE_WD="${WORKDIR}/nginx_syslog_patch-${SYSLOG_MODULE_PV}"
 
 # devel_kit (https://github.com/simpl/ngx_devel_kit, BSD license)
