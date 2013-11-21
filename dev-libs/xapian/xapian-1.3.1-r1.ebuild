@@ -44,7 +44,7 @@ src_configure() {
 	use chert || myconf="${myconf} --disable-backend-chert"
 	use inmemory || myconf="${myconf} --disable-backend-inmemory"
 
-	myconf="${myconf} --enable-backend-flint --enable-backend-remote"
+	myconf="${myconf} --enable-backend-remote --program-suffix="
 
 	econf $myconf
 }
