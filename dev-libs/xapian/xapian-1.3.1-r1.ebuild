@@ -17,7 +17,7 @@ IUSE="doc static-libs -sse +sse2 +brass +chert +inmemory"
 
 DEPEND="sys-libs/zlib"
 RDEPEND="${DEPEND}"
-
+REQUIRED_USE="inmemory? ( chert )"
 S="${WORKDIR}/${MY_P}"
 
 src_configure() {
