@@ -49,6 +49,7 @@ src_test() {
 src_install() {
 	autotools-multilib_src_install
 	if use examples; then
+		find examples/ -name "Makefile.*" -delete || die
 		local dir
 		for dir in examples/c examples/c++; do
 			insinto /usr/share/doc/${PF}/${dir}
