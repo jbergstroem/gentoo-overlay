@@ -4,7 +4,7 @@
 
 EAPI="2"
 
-inherit eutils
+inherit eutils toolchain-funcs
 
 DESCRIPTION="A straightforward implementation of DBM"
 HOMEPAGE="http://fallabs.com/kyotocabinet/"
@@ -23,6 +23,7 @@ src_prepare() {
 	epatch "${FILESDIR}/fix_configure-1.2.62.patch"
 	sed -ie "/ldconfig/d" Makefile.in
 	sed -ie "/DOCDIR/d" Makefile.in
+	tc-export AR
 }
 
 src_configure() {
