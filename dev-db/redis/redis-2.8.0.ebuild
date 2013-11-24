@@ -31,7 +31,7 @@ pkg_setup() {
 }
 
 src_prepare() {
-	epatch "${FILESDIR}/${PN}-2.6.7"-{shared,config}.patch
+	epatch "${FILESDIR}/${P}"-{shared,config}.patch
 
 	# bug 467172, 467174
 	sed -i -e 's:AR=:AR?=:g' -e 's:RANLIB=:RANLIB?=:g' "${S}/deps/lua/src/Makefile" || die
