@@ -1,5 +1,5 @@
 #!/sbin/runscript
-# $Header: /var/cvsroot/gentoo-x86/dev-db/redis/files/redis.initd,v 1.4 2012/02/04 21:17:55 swegener Exp $
+# $Header: /var/cvsroot/gentoo-x86/dev-db/redis/files/redis.initd-3,v 1.1 2013/08/26 11:47:13 djc Exp $
 
 REDIS_DIR=${REDIS_DIR:-/var/lib/redis}
 REDIS_CONF=${REDIS_CONF:-/etc/redis.conf}
@@ -11,7 +11,7 @@ command=/usr/sbin/redis-server
 start_stop_daemon_args="--chdir \"${REDIS_DIR}\"
 	--user ${REDIS_USER} --group ${REDIS_GROUP}"
 command_args="${REDIS_OPTS}"
-pidfile=${REDIS_PID:-/var/run/redis/redis.pid}
+pidfile=${REDIS_PID:-/run/redis/redis.pid}
 
 depend() {
 	use net localmount logger
@@ -20,4 +20,13 @@ depend() {
 
 start_pre() {
 	checkpath -d -m 0775 -o ${REDIS_USER}:${REDIS_GROUP} $(dirname ${REDIS_PID})
+}
+
+stop() {
+	ebegin "Stopping ${SVCNAME}"
+	start-stop-daemon --stop \
+		--exec ${retries} \
+		--retry 30 \
+		--pidfile ${pidfile}
+	eend
 }

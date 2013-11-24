@@ -4,11 +4,11 @@
 
 EAPI=5
 
-inherit autotools eutils flag-o-matic toolchain-funcs user
+inherit autotools eutils flag-o-matic systemd toolchain-funcs user
 
 DESCRIPTION="A persistent caching system, key-value and data structures database."
 HOMEPAGE="http://redis.io/"
-SRC_URI="http://redis.googlecode.com/files/${P}.tar.gz"
+SRC_URI="http://download.redis.io/releases/${P}.tar.gz"
 
 LICENSE="BSD"
 KEYWORDS="~amd64 ~x86 ~x86-macos ~x86-solaris"
@@ -88,7 +88,10 @@ src_install() {
 	fperms 0644 /etc/{redis,sentinel}.conf
 
 	newconfd "${FILESDIR}/redis.confd" redis
-	newinitd "${FILESDIR}/redis.initd" redis
+	newinitd "${FILESDIR}/redis.initd-3" redis
+
+	systemd_dounit "${FILESDIR}/redis.service"
+	systemd_newtmpfilesd "${FILESDIR}/redis.tmpfiles" redis.conf
 
 	nonfatal dodoc 00-RELEASENOTES BUGS CONTRIBUTING MANIFESTO README
 
